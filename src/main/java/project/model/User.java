@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Data
 @Accessors(chain = true)
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted = false")
+@SQLRestriction("is_deleted = false")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public class User implements UserDetails {
     private String firstName;
     @Column(nullable = false, name = "last_name")
     private String lastName;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR")
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
     @Column(nullable = false, name = "is_deleted")
