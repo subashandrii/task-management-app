@@ -1,4 +1,4 @@
-package project.dto.user;
+package project.dto.user.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package project.dto.user;
+package project.dto.user.request;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
