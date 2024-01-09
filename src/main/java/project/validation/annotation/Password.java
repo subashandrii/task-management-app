@@ -13,7 +13,6 @@ import project.validation.validator.PasswordValidator;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Password {
     String message() default "format is not valid";
-    boolean nullable() default false;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

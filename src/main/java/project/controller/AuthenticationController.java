@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import project.dto.user.UserLoginRequestDto;
-import project.dto.user.UserLoginResponseDto;
-import project.dto.user.UserRegistrationRequestDto;
-import project.dto.user.UserRegistrationResponseDto;
+import project.dto.user.request.UserLoginRequestDto;
+import project.dto.user.request.UserRegistrationRequestDto;
+import project.dto.user.response.UserResponseDto;
+import project.dto.user.response.UserTokenResponseDto;
 import project.exception.AuthenticationException;
 import project.service.AuthenticationService;
 
@@ -27,7 +27,7 @@ public class AuthenticationController {
     @PostMapping("/register/admin")
     @Operation(summary = "Registration for administrators")
     @ResponseStatus(HttpStatus.CREATED)
-    UserRegistrationResponseDto registerForAdmin(@RequestBody @Valid
+    UserResponseDto registerForAdmin(@RequestBody @Valid
                                                  UserRegistrationRequestDto requestDto)
             throws AuthenticationException {
         return authenticationService.register(requestDto, true);
@@ -36,7 +36,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     @Operation(summary = "Registration for users")
     @ResponseStatus(HttpStatus.CREATED)
-    UserRegistrationResponseDto register(@RequestBody @Valid UserRegistrationRequestDto requestDto)
+    UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto requestDto)
             throws AuthenticationException {
         return authenticationService.register(requestDto, false);
     }
@@ -44,7 +44,7 @@ public class AuthenticationController {
     @PostMapping("/login")
     @Operation(summary = "Login in profile")
     @ResponseStatus(HttpStatus.OK)
-    UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto)
+    UserTokenResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto)
             throws AuthenticationException {
         return authenticationService.login(requestDto);
     }

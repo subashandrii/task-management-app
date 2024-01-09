@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
@@ -78,8 +80,12 @@ public class User implements UserDetails {
         return !isDeleted;
     }
     
+    @Getter
+    @RequiredArgsConstructor
     public enum Role {
-        ADMIN,
-        USER
+        USER(0),
+        ADMIN(1);
+
+        private final int level;
     }
 }

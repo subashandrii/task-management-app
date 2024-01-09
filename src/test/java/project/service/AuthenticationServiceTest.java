@@ -19,10 +19,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
-import project.dto.user.UserLoginRequestDto;
-import project.dto.user.UserLoginResponseDto;
-import project.dto.user.UserRegistrationRequestDto;
-import project.dto.user.UserRegistrationResponseDto;
+import project.dto.user.request.UserLoginRequestDto;
+import project.dto.user.request.UserRegistrationRequestDto;
+import project.dto.user.response.UserResponseDto;
+import project.dto.user.response.UserTokenResponseDto;
 import project.exception.AuthenticationException;
 import project.mapper.UserMapper;
 import project.model.User;
@@ -46,7 +46,7 @@ class AuthenticationServiceTest {
     @InjectMocks
     private AuthenticationService authenticationService;
     private UserRegistrationRequestDto userRegistrationRequestDto;
-    private UserRegistrationResponseDto userRegistrationResponseDto;
+    private UserResponseDto userResponseDto;
     private UserLoginRequestDto userLoginRequestDto;
     private User user;
     
@@ -60,7 +60,7 @@ class AuthenticationServiceTest {
                                              .setPassword("Password123!!!")
                                              .setRepeatPassword("Password123!!!");
         
-        userRegistrationResponseDto = new UserRegistrationResponseDto()
+        userResponseDto = new UserResponseDto()
                                               .setId(1L)
                                               .setUsername("bob123")
                                               .setFirstName("Bob")
@@ -91,17 +91,17 @@ class AuthenticationServiceTest {
         when(userMapper.toModel(userRegistrationRequestDto)).thenReturn(userWithoutId);
         when(passwordEncoder.encode(userWithoutId.getPassword())).thenReturn(any());
         when(userRepository.save(userWithoutId)).thenReturn(user);
-        when(userMapper.toDto(user)).thenReturn(userRegistrationResponseDto);
-        UserRegistrationResponseDto actual =
+        when(userMapper.toDto(user)).thenReturn(userResponseDto);
+        UserResponseDto actual =
                 authenticationService.register(userRegistrationRequestDto, true);
         
         Assertions.assertNotNull(actual);
-        EqualsBuilder.reflectionEquals(userRegistrationResponseDto, actual);
+        EqualsBuilder.reflectionEquals(userResponseDto, actual);
     }
     
     @Test
     @DisplayName("Registration of a new user when there is already a user with this email")
-    public void register_UserWithThisEmailIsAlreadyExist_ReturnsException() {
+    public void register_UserWithThisEmailAlreadyExist_ReturnsException() {
         when(userRepository.findByEmail(userRegistrationRequestDto.getEmail()))
                 .thenReturn(Optional.of(user));
         
@@ -112,7 +112,7 @@ class AuthenticationServiceTest {
     
     @Test
     @DisplayName("Registration of a new user when there is already a user with this username")
-    public void register_UserWithThisUsernameIsAlreadyExist_ReturnsException() {
+    public void register_UserWithThisUsernameAlreadyExist_ReturnsException() {
         when(userRepository.findByUsername(userRegistrationRequestDto.getUsername()))
                 .thenReturn(Optional.of(user));
         
@@ -133,7 +133,7 @@ class AuthenticationServiceTest {
                 .thenReturn(true);
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(jwtUtil.generateToken(authentication.getName())).thenReturn(token);
-        UserLoginResponseDto actual = authenticationService.login(userLoginRequestDto);
+        UserTokenResponseDto actual = authenticationService.login(userLoginRequestDto);
         
         assertNotNull(actual);
         assertEquals(token, actual.getToken());
@@ -151,7 +151,7 @@ class AuthenticationServiceTest {
                 .thenReturn(true);
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(jwtUtil.generateToken(authentication.getName())).thenReturn(token);
-        UserLoginResponseDto actual = authenticationService.login(userLoginRequestDto);
+        UserTokenResponseDto actual = authenticationService.login(userLoginRequestDto);
         
         assertNotNull(actual);
         assertEquals(token, actual.getToken());
@@ -164,6 +164,7 @@ class AuthenticationServiceTest {
         
         when(userRepository.findByUsername(userLoginRequestDto.getEmailOrUsername()))
                 .thenReturn(Optional.empty());
+
         Exception exception = assertThrows(AuthenticationException.class,
                 () -> authenticationService.login(userLoginRequestDto));
         assertEquals("Invalid username or password", exception.getMessage());
@@ -176,6 +177,7 @@ class AuthenticationServiceTest {
         
         when(userRepository.findByEmail(userLoginRequestDto.getEmailOrUsername()))
                 .thenReturn(Optional.empty());
+
         Exception exception = assertThrows(AuthenticationException.class,
                 () -> authenticationService.login(userLoginRequestDto));
         assertEquals("Invalid username or password", exception.getMessage());

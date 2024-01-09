@@ -32,21 +32,21 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
-import project.dto.user.UserLoginRequestDto;
-import project.dto.user.UserLoginResponseDto;
-import project.dto.user.UserRegistrationRequestDto;
-import project.dto.user.UserRegistrationResponseDto;
+import project.dto.user.request.UserLoginRequestDto;
+import project.dto.user.request.UserRegistrationRequestDto;
+import project.dto.user.response.UserResponseDto;
+import project.dto.user.response.UserTokenResponseDto;
 import project.secure.JwtUtil;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AuthenticationControllerTest {
+class AuthenticationIntegrationControllerTest {
     protected static MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private JwtUtil jwtUtil;
     private UserRegistrationRequestDto userRegistrationRequestDto;
-    private UserRegistrationResponseDto userRegistrationResponseDto;
+    private UserResponseDto userResponseDto;
     private UserLoginRequestDto userLoginRequestDto;
     
     @BeforeAll
@@ -69,11 +69,13 @@ class AuthenticationControllerTest {
                                              .setPassword("Password123!!!")
                                              .setRepeatPassword("Password123!!!");
         
-        userRegistrationResponseDto = new UserRegistrationResponseDto()
+        userResponseDto = new UserResponseDto()
                                               .setId(1L)
                                               .setUsername("bob123")
                                               .setFirstName("Bob")
-                                              .setLastName("Lastname");
+                                              .setLastName("Lastname")
+                                              .setRole("USER")
+                                              .setEmail("bob@email.com");
         
         userLoginRequestDto = new UserLoginRequestDto()
                                       .setEmailOrUsername("bob123")
@@ -105,11 +107,11 @@ class AuthenticationControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                                    .andExpect(status().isCreated())
                                    .andReturn();
-        UserRegistrationResponseDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsString(), UserRegistrationResponseDto.class);
+        UserResponseDto actual = objectMapper.readValue(
+                result.getResponse().getContentAsString(), UserResponseDto.class);
          
         assertNotNull(actual);
-        EqualsBuilder.reflectionEquals(userRegistrationResponseDto, actual, "id");
+        EqualsBuilder.reflectionEquals(userResponseDto, actual, "id");
     }
     
     @Test
@@ -123,11 +125,11 @@ class AuthenticationControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                                    .andExpect(status().isCreated())
                                    .andReturn();
-        UserRegistrationResponseDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsString(), UserRegistrationResponseDto.class);
+        UserResponseDto actual = objectMapper.readValue(
+                result.getResponse().getContentAsString(), UserResponseDto.class);
         
         assertNotNull(actual);
-        EqualsBuilder.reflectionEquals(userRegistrationResponseDto, actual, "id");
+        EqualsBuilder.reflectionEquals(userResponseDto, actual, "id");
     }
     
     @Test
@@ -146,8 +148,8 @@ class AuthenticationControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                                    .andExpect(status().isOk())
                                    .andReturn();
-        UserLoginResponseDto actual = objectMapper.readValue(
-                result.getResponse().getContentAsString(), UserLoginResponseDto.class);
+        UserTokenResponseDto actual = objectMapper.readValue(
+                result.getResponse().getContentAsString(), UserTokenResponseDto.class);
         
         assertNotNull(actual);
         assertTrue(jwtUtil.isValidToken(actual.getToken()));
@@ -177,7 +179,6 @@ class AuthenticationControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                                     .andExpect(status().isBadRequest())
                                     .andReturn();
-        
         List<String> errorMessages =
                 Stream.of(resultFromRegisterAdminEndpoint, resultFromRegisterEndpoint)
                         .map(this::getErrorResponse)
@@ -206,13 +207,8 @@ class AuthenticationControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                                                             .andExpect(status().isBadRequest())
                                                             .andReturn();
-        
-        List<String> errorMessages =
-                Stream.of(resultFromLoginEndpoint)
-                        .map(this::getErrorResponse)
-                        .map(messages -> objectMapper.convertValue(messages, String[].class))
-                        .flatMap(Arrays::stream)
-                        .toList();
+        List<String> errorMessages = objectMapper.convertValue(
+                getErrorResponse(resultFromLoginEndpoint), List.class);
         
         assertEquals(2, errorMessages.size());
         assertTrue(errorMessages.contains("emailOrUsername must not be null"));
