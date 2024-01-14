@@ -20,7 +20,7 @@ class UserRepositoryTest {
     @DisplayName("Find user by username")
     @Sql(scripts = "classpath:database/add-users-to-table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/remove-users-from-table.sql",
+    @Sql(scripts = "classpath:database/remove-all-tables.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByUsername_UsernameExists_ReturnsUser() {
         String username = "alice123";
@@ -34,7 +34,7 @@ class UserRepositoryTest {
     @DisplayName("Find user by non-existent username")
     @Sql(scripts = "classpath:database/add-users-to-table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/remove-users-from-table.sql",
+    @Sql(scripts = "classpath:database/remove-all-tables.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByUsername_UsernameDoesNotExist_ReturnsEmptyOptional() {
         String username = "alice";
@@ -47,7 +47,7 @@ class UserRepositoryTest {
     @DisplayName("Find user by email")
     @Sql(scripts = "classpath:database/add-users-to-table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/remove-users-from-table.sql",
+    @Sql(scripts = "classpath:database/remove-all-tables.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByEmail_EmailExists_ReturnsUser() {
         String email = "john@email.com";
@@ -61,7 +61,7 @@ class UserRepositoryTest {
     @DisplayName("Find user by non-existent email")
     @Sql(scripts = "classpath:database/add-users-to-table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/remove-users-from-table.sql",
+    @Sql(scripts = "classpath:database/remove-all-tables.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByEmail_EmailDoesNotExist_ReturnsEmptyOptional() {
         String username = "john123@email.com";
@@ -74,7 +74,7 @@ class UserRepositoryTest {
     @DisplayName("Get user by username")
     @Sql(scripts = "classpath:database/add-users-to-table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/remove-users-from-table.sql",
+    @Sql(scripts = "classpath:database/remove-all-tables.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void getUserByUsername_UsernameExists_ReturnsUser() {
         String username = "bob123";
@@ -88,7 +88,7 @@ class UserRepositoryTest {
     @DisplayName("Get user by non-existent username")
     @Sql(scripts = "classpath:database/add-users-to-table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/remove-users-from-table.sql",
+    @Sql(scripts = "classpath:database/remove-all-tables.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void getUserByUsername_UsernameDoesNotExist_ReturnsNull() {
         String username = "bob321";

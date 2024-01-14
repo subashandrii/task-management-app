@@ -35,9 +35,15 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
     
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<Object> handleRegistrationException(CustomException ex) {
+    public ResponseEntity<Object> handleCustomException(CustomException ex) {
         String message = ex.getMessage();
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CustomRuntimeException.class)
+    public ResponseEntity<Object> handleCustomRuntimeException(CustomRuntimeException ex) {
+        String message = ex.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
     }
     
     private String getErrors(ObjectError e) {

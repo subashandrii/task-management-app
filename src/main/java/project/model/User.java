@@ -40,14 +40,14 @@ public class User implements UserDetails {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private String password;
-    @Column(nullable = false, name = "first_name")
+    @Column(nullable = false)
     private String firstName;
-    @Column(nullable = false, name = "last_name")
+    @Column(nullable = false)
     private String lastName;
     @Column(nullable = false, columnDefinition = "VARCHAR")
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
-    @Column(nullable = false, name = "is_deleted")
+    @Column(nullable = false)
     private boolean isDeleted = false;
     
     @Override

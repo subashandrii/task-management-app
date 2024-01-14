@@ -1,4 +1,4 @@
-package project.service;
+package project.secure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,7 +16,6 @@ import project.exception.AuthenticationException;
 import project.mapper.UserMapper;
 import project.model.User;
 import project.repository.UserRepository;
-import project.secure.JwtUtil;
 
 @RequiredArgsConstructor
 @Component
