@@ -3,7 +3,7 @@ version: "3.8"
 services:
   mysqldb:
     image: mysql
-    restart: no
+    restart: on-failure
     env_file:
       - ./.env
     environment:
@@ -20,7 +20,7 @@ services:
     depends_on:
       - mysqldb
     image: task-management-app
-    restart: no
+    restart: on-failure
     build: .
     env_file:
       - ./.env
@@ -34,4 +34,3 @@ services:
       "spring.datasource.password" : "$MYSQL_ROOT_PASSWORD"
       }'
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
-      JWT_SECRET: "$JWT_SECRET"

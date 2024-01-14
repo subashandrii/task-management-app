@@ -27,6 +27,7 @@ import project.exception.AuthenticationException;
 import project.mapper.UserMapper;
 import project.model.User;
 import project.repository.UserRepository;
+import project.secure.AuthenticationService;
 import project.secure.JwtUtil;
 
 @ExtendWith(MockitoExtension.class)

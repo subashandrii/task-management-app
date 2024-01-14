@@ -15,7 +15,7 @@ import project.dto.user.request.UserRegistrationRequestDto;
 import project.dto.user.response.UserResponseDto;
 import project.dto.user.response.UserTokenResponseDto;
 import project.exception.AuthenticationException;
-import project.service.AuthenticationService;
+import project.secure.AuthenticationService;
 
 @Tag(name = "Authentication")
 @RequiredArgsConstructor

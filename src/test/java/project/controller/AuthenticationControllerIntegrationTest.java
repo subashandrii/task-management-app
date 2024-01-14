@@ -39,7 +39,7 @@ import project.dto.user.response.UserTokenResponseDto;
 import project.secure.JwtUtil;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AuthenticationIntegrationControllerTest {
+class AuthenticationControllerIntegrationTest {
     protected static MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
@@ -87,7 +87,7 @@ class AuthenticationIntegrationControllerTest {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(connection,
-                    new ClassPathResource("database/remove-users-from-table.sql"));
+                    new ClassPathResource("database/remove-all-tables.sql"));
         }
     }
     
